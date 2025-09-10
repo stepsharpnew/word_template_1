@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TemplatesModule } from './templates/templates.module';
-import { FillModule } from './fill/fill.module';
+import { TransformerModule } from './transformer/transformer.module';
+
 
 
 @Module({
-imports: [TemplatesModule, FillModule],
+imports: [TransformerModule],
 })
 export class AppModule {}

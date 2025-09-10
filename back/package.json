@@ -26,6 +26,7 @@
     "@nestjs/swagger": "^11.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "docx-templates": "^4.14.1",
     "docxtemplater": "^3.66.2",
     "multer": "^2.0.2",
     "pizzip": "^3.2.0",
