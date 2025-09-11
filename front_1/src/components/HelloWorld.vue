@@ -66,16 +66,8 @@
             </v-alert>
 
             <v-expand-transition>
-              <div v-if="parsedOk" class="mt-4">
-                <v-card class="pa-4 elevation-2" outlined>
-                  <div class="d-flex justify-space-between align-center mb-2">
-                    <div class="text-subtitle-2 font-weight-medium">Preview объекта для отправки</div>
-                    <div class="text-caption grey--text">Поля: col1 … col8</div>
-                  </div>
-                  <pre style="max-height:260px; overflow:auto; margin:0; font-size:13px;">
-{{ previewJson }}
-                  </pre>
-                </v-card>
+              <div class="mt-4">
+                <SelectReason/>
               </div>
             </v-expand-transition>
           </v-card>
@@ -88,6 +80,7 @@
 <script>
 import * as XLSX from 'xlsx'
 import axios from 'axios'
+import SelectReason from './SelectReason.vue'
 export default {
   name: 'App',
   data() {
@@ -105,6 +98,9 @@ export default {
         'smrStart','contractEnd'
       ]
     }
+  },
+  components : {
+    SelectReason
   },
   computed: {
     previewJson() {
@@ -181,15 +177,9 @@ export default {
             return
           }
 
-          // Выявляем, где данные:
-          // если rows.length >= 2 — считаем, что первая строка заголовки, вторая — данные
-          // если rows.length === 1 — считаем, что это строка данных без заголовков
           let dataRow = null
           if (rows.length >= 1) {
-            dataRow = rows[1]           
-            if (rows[2][0] != null) {
-              this.warning = 'В файле найдено более одной строки данных — будет использована первая строка данных.'
-            }
+            dataRow = rows[1]      
           } else {
             dataRow = rows[0]
           }
@@ -200,8 +190,6 @@ export default {
             this.error = 'Не удалось получить строку данных'
             return
           }
-
-          
           const normalized = []
           for (let i = 0; i < this.keys.length; i++) {
             normalized[i] = i < dataRow.length ? dataRow[i] : null
@@ -236,15 +224,6 @@ export default {
       
 
       this.sending = true
-      // try {
-      //   const response = await axios.get('/api/transformer')
-      //   console.log(response);
-        
-      // } catch (error) {
-      //   console.log(error);
-        
-      // }
-
       try {
         const resp = await axios.post('/api/transformer/letter', this.parsedObject, {
           responseType: 'arraybuffer' // <- важно
@@ -278,7 +257,3 @@ export default {
   }
 }
 </script>
-
-<style>
-/* Мелкие правки при необходимости */
-</style>
