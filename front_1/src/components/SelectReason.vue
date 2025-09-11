@@ -2,13 +2,13 @@
   <div>
     <v-row class="pa-4" dense>
       <!-- Список шаблонов -->
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="6">
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
             <div class="text-subtitle-2 font-weight-medium primary--text">
               Выберите шаблон Word
             </div>
-            <div class="text-caption grey--text">Шаблоны: {{ templates.length || '0' }}</div>
+            <!-- <div class="text-caption grey--text">Шаблоны: {{ templates.length || '0' }}</div> -->
           </div>
 
           <v-row dense>
@@ -32,13 +32,13 @@
                 :key="tpl.id"
                 cols="12"
                 sm="6"
-                md="4"
-                lg="3"
+                md="6"
+                lg="6"
                 class="d-flex"
               >
                 <v-card class="flex-grow-1 d-flex flex-column" outlined>
                   <v-img
-                    :src="s3Url(tpl.imageKey)"
+                    :src="tpl.imageKey"
                     :alt="tpl.name"
                     height="140"
                     class="grey lighten-4"
@@ -63,26 +63,26 @@
                   </v-card-text>
 
                   <v-card-actions class="mt-auto">
-                    <v-btn
+                    <!-- <v-btn
                       small
                       text
                       @click="selectTemplate(tpl)"
                       class="ma-0"
                     >
-                      Preview
-                    </v-btn>
+                      
+                    </v-btn> -->
 
                     <v-spacer></v-spacer>
 
                     <v-btn
                       small
                       color="primary"
-                      @click="sendTemplate(tpl)"
+                      @click="selectTemplate(tpl)"
                       :loading="sendingId === tpl.id"
                       :disabled="sendingId === tpl.id"
                       class="white--text"
                     >
-                      Send
+                      Выбрать
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -93,16 +93,22 @@
       </v-col>
 
       <!-- Preview блока (как у вас исходно) -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
-            <div class="text-subtitle-2 font-weight-medium">Preview объекта для отправки</div>
-            <div class="text-caption grey--text">Поля: col1 … col8</div>
+            <div class="text-subtitle-2 font-weight-medium">Выбранный шаблон</div>
           </div>
-
+<!-- 
           <pre style="max-height:260px; overflow:auto; margin:0; font-size:13px;">
-{{ previewJson }}
-          </pre>
+			{{ previewJson }}
+          </pre> -->
+		    <v-img
+				:src="selectedTemplate.imageKey"
+				height="340"
+				class="grey lighten-4"
+				cover
+			/>
+		  <!-- Photo -->
 
           <v-card-actions class="pt-4">
             <v-btn
@@ -130,7 +136,7 @@
       </v-col>
     </v-row>
 
-    <!-- Snackbar для уведомлений -->
+
     <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
       {{ snackbar.text }}
       <v-btn text @click="snackbar.show = false">Close</v-btn>
@@ -145,26 +151,19 @@ export default {
   name: 'TemplatePicker',
   props: {
     // Базовый URL API (настраиваемый)
-    apiBase: {
-      type: String,
-      default: '/api' // ожидается, что GET `${apiBase}/templates` вернёт список
-    },
-    // S3 конфигурация — можно переопределить
-    s3Bucket: {
-      type: String,
-      default: 'my-templates-bucket'
-    },
-    s3BaseUrl: {
-      type: String,
-      default: 'https://s3.amazonaws.com' // при необходимости укажите регионный домен
-    }
   },
   data() {
     return {
       templates: [], // полученные шаблоны
       loading: false,
       error: null,
-      selectedTemplate: null,
+      selectedTemplate: {
+          id: '1',
+          name: 'ООО "Энергосистемы"',
+          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
+          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
+        },
       previewJson: '{}',
       sendingId: null, // id шаблона, который отправляется
       snackbar: {
@@ -179,21 +178,13 @@ export default {
     this.fetchTemplates();
   },
   methods: {
-    s3Url(key) {
-      if (!key) return '';
-      // Собираем URL: <s3BaseUrl>/<bucket>/<key>
-      // Пример: https://s3.amazonaws.com/my-bucket/path/to/image.png
-      // Если у вас другой формат (например регионный), передайте s3BaseUrl соответствующим образом
-      return `${this.s3BaseUrl}/${this.s3Bucket}/${key}`;
-    },
-
     async fetchTemplates() {
       this.loading = true;
       this.error = null;
 
       try {
-        const res = await axios.get(`${this.apiBase}/templates`);
-        // ожидаем массив объектов: { id, name, description, imageKey, previewData }
+        const res = await axios.get(`/api/templates`);
+
         if (Array.isArray(res.data) && res.data.length) {
           this.templates = res.data;
         } else {
@@ -259,33 +250,19 @@ export default {
     _demoTemplates() {
       return [
         {
-          id: 'tpl-word-01',
-          name: 'Invoice / Счёт',
+          id: '1',
+          name: 'ООО "Энергосистемы"',
           description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
-          imageKey: 'demo/invoice.png',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
           previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
         },
         {
-          id: 'tpl-word-02',
-          name: 'Contract / Договор',
+          id: '2',
+          name: 'ООО "Гефест"',
           description: 'Базовый договор с местами для подписей и реквизитов.',
-          imageKey: 'demo/contract.png',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/default.jpg',
           previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
         },
-        {
-          id: 'tpl-word-03',
-          name: 'Report / Отчёт',
-          description: 'Шаблон отчёта с заголовком, таблицей и подписью.',
-          imageKey: 'demo/report.png',
-          previewData: { col1: 'Title', col2: 'Author', col3: 'Summary' }
-        },
-        {
-          id: 'tpl-word-04',
-          name: 'Offer / Коммерческое предложение',
-          description: 'Краткое коммерческое предложение с пунктами и ценой.',
-          imageKey: 'demo/offer.png',
-          previewData: { col1: 'Item', col2: 'Qty', col3: 'Price' }
-        }
       ];
     }
   }

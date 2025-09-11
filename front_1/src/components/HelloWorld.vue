@@ -8,12 +8,12 @@
             class="rounded-xl pa-8 w-100"
             style="max-width: 1100px; min-height: 860px;"
           >
-            <div class="d-flex flex-column align-center mb-6">
-              <div class="text-h4 font-weight-bold mb-2 text-center">Создание Word ответа</div>
-              <!-- <div class="text-subtitle-2 grey--text text-center">Загрузите .xlsx (ровно 8 колонок, 1 строка данных)</div> -->
-            </div>
 
-            <div class="d-flex justify-center">
+              <div class="mt-4">
+                <SelectReason/>
+              </div>
+
+            <div class="d-flex w-100 ">
               <v-file-input
                 v-model="files"
                 label="Выбрать .xlsx файл"
@@ -38,7 +38,6 @@
                 <div class="text-caption">
                   <span v-if="parsing">Парсинг файла...</span>
                   <span v-else-if="parsedOk">Готов к отправке (объект сформирован)</span>
-                  <span v-else>Файл не распарсен</span>
                 </div>
               </div>
 
@@ -64,12 +63,6 @@
             <v-alert v-if="error" type="error" class="mt-4" density="comfortable">
               {{ error }}
             </v-alert>
-
-            <v-expand-transition>
-              <div class="mt-4">
-                <SelectReason/>
-              </div>
-            </v-expand-transition>
           </v-card>
         </v-hover>
       </v-container>
