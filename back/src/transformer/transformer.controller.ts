@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { TransformerService } from './transformer.service';
 import * as DTO from './dto/main.dto'; // namespace import — решает проблему декораторов
 import * as express from 'express';
@@ -21,5 +21,10 @@ export class TransformerController {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     );
     res.send(buffer);
+  }
+
+  @Get()
+  async getTry(){
+    return "GoodSeeYour"
   }
 }

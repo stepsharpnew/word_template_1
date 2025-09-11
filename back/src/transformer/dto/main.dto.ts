@@ -12,7 +12,7 @@ export class ExcelRowDTO {
   @IsString()
   readonly contractNo?: string;
 
-  @ApiProperty({ example: "ХРЭС", description: "РЭС", required: false })
+  @ApiProperty({ example: "СРЭС", description: "РЭС", required: false })
   @IsOptional()
   @IsString()
   readonly res?: string;
@@ -97,11 +97,6 @@ export class ExcelRowDTO {
   @IsString()
   readonly pirStatusDate?: string;
 
-  @ApiProperty({ example: "", description: "Выезд на ППО", required: false })
-  @IsOptional()
-  @IsString()
-  readonly ppoVisit?: string;
-
   @ApiProperty({ example: "", description: "ГЕО получено", required: false })
   @IsOptional()
   @IsString()
@@ -112,25 +107,6 @@ export class ExcelRowDTO {
   @IsString()
   readonly geoAgreeStatus?: string;
 
-  @ApiProperty({ example: "", description: "ГЕО согласовано всеми", required: false })
-  @IsOptional()
-  @IsString()
-  readonly geoAgreedAll?: string;
-
-  @ApiProperty({ example: "", description: "Статус согл ПТ", required: false })
-  @IsOptional()
-  @IsString()
-  readonly ptAgreeStatus?: string;
-
-  @ApiProperty({ example: "", description: "ПТ согласован Землевлад.", required: false })
-  @IsOptional()
-  @IsString()
-  readonly ptAgreedLandowner?: string;
-
-  @ApiProperty({ example: "", description: "ПТ и обуд согл с РЭС", required: false })
-  @IsOptional()
-  @IsString()
-  readonly ptEquipAgreeWithRes?: string;
 
   @ApiProperty({ example: "Комиссия ГНБ ОК", description: "ГНБ (ПИР)", required: false })
   @IsOptional()
@@ -142,198 +118,13 @@ export class ExcelRowDTO {
   @IsString()
   readonly gnbPirDate?: string;
 
-  @ApiProperty({ example: "(нет)", description: "Статус РЗА", required: false })
-  @IsOptional()
-  @IsString()
-  readonly rzaStatus?: string;
-
-  @ApiProperty({ example: "", description: "Статус РЗА дата", required: false })
-  @IsOptional()
-  @IsString()
-  readonly rzaStatusDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус ТМ", required: false })
-  @IsOptional()
-  @IsString()
-  readonly tmStatus?: string;
-
-  @ApiProperty({ example: "", description: "Статус ТМ дата", required: false })
-  @IsOptional()
-  @IsString()
-  readonly tmStatusDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "ПИР Предв. согл. до АПСД", required: false })
-  @IsOptional()
-  @IsString()
-  readonly pirPreAgreeBeforeApsd?: string;
-
-  @ApiProperty({ example: "(нет)", description: "ПИР согласован АПСД", required: false })
-  @IsOptional()
-  @IsString()
-  readonly pirAgreedApsd?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Отв. за СМР", required: false })
-  @IsOptional()
-  @IsString()
-  readonly smrResponsible?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус СМР", required: false })
-  @IsOptional()
-  @IsString()
-  readonly smrStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статуса СМР", required: false })
-  @IsOptional()
-  @IsString()
-  readonly smrStatusDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус Снабж матер", required: false })
-  @IsOptional()
-  @IsString()
-  readonly supplyMatStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статуса Снабж матер", required: false })
-  @IsOptional()
-  @IsString()
-  readonly supplyMatDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус Снабж оборуд", required: false })
-  @IsOptional()
-  @IsString()
-  readonly supplyEquipStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статуса Снабж оборуд", required: false })
-  @IsOptional()
-  @IsString()
-  readonly supplyEquipDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус Отключение", required: false })
-  @IsOptional()
-  @IsString()
-  readonly disconnStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статус Отключение", required: false })
-  @IsOptional()
-  @IsString()
-  readonly disconnStatusDate?: string;
-
-  @ApiProperty({ example: "", description: "Зем ордер статус", required: false })
-  @IsOptional()
-  @IsString()
-  readonly landOrderStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статуса Зем ордер", required: false })
-  @IsOptional()
-  @IsString()
-  readonly landOrderDate?: string;
-
   @ApiProperty({ example: "24.01.2025", description: "СМР старт", required: false })
   @IsOptional()
   @IsString()
   readonly smrStart?: string;
 
-  @ApiProperty({ example: "", description: "СМР финиш", required: false })
-  @IsOptional()
-  @IsString()
-  readonly smrFinish?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус СК ЭС", required: false })
-  @IsOptional()
-  @IsString()
-  readonly skEsStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статуса СК ЭС", required: false })
-  @IsOptional()
-  @IsString()
-  readonly skEsDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Отв ИД", required: false })
-  @IsOptional()
-  @IsString()
-  readonly idResponsible?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус ИД", required: false })
-  @IsOptional()
-  @IsString()
-  readonly idStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статуса ИД", required: false })
-  @IsOptional()
-  @IsString()
-  readonly idStatusDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Паспорта получены ПТО", required: false })
-  @IsOptional()
-  @IsString()
-  readonly ptoPassportsReceived?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Требуется исп схема", required: false })
-  @IsOptional()
-  @IsString()
-  readonly requiresExecScheme?: string;
-
-  @ApiProperty({ example: "(нет)", description: "ИД согласовано РЭС", required: false })
-  @IsOptional()
-  @IsString()
-  readonly idAgreedRES?: string;
-
-  @ApiProperty({ example: "(нет)", description: "ИД сдано в архив", required: false })
-  @IsOptional()
-  @IsString()
-  readonly idArchived?: string;
-
-  @ApiProperty({ example: "нет", description: "Статус ВКЛ", required: false })
-  @IsOptional()
-  @IsString()
-  readonly onStatus?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Дата статуса ВКЛ", required: false })
-  @IsOptional()
-  @IsString()
-  readonly onStatusDate?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Объект включен", required: false })
-  @IsOptional()
-  @IsString()
-  readonly objectIncluded?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Отв Смета", required: false })
-  @IsOptional()
-  @IsString()
-  readonly estimateResponsible?: string;
-
-  @ApiProperty({ example: "(нет)", description: "Статус ПСД", required: false })
-  @IsOptional()
-  @IsString()
-  readonly psdStatus?: string;
-
-  @ApiProperty({ example: "", description: "Дата статуса ПСД", required: false })
-  @IsOptional()
-  @IsString()
-  readonly psdStatusDate?: string;
-
-  @ApiProperty({ example: "", description: "Смета согласована заказчиком", required: false })
-  @IsOptional()
-  @IsString()
-  readonly estimateAgreedCustomer?: string;
-
-  @ApiProperty({ example: "", description: "ПСД утверждено", required: false })
-  @IsOptional()
-  @IsString()
-  readonly psdApproved?: string;
-
-  @ApiProperty({ example: "", description: "Расчет", required: false })
-  @IsOptional()
-  @IsString()
-  readonly calculation?: string;
-
-  @ApiProperty({ example: "", description: "Конец договора", required: false })
+  @ApiProperty({ example: "07.02.2025", description: "Конец договора", required: false })
   @IsOptional()
   @IsString()
   readonly contractEnd?: string;
-
-  @ApiProperty({ example: "", description: "Жалобы Организация", required: false })
-  @IsOptional()
-  @IsString()
-  readonly complaintsOrg?: string;
 }

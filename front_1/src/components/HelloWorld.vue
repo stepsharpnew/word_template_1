@@ -87,7 +87,7 @@
 
 <script>
 import * as XLSX from 'xlsx'
-
+import axios from 'axios'
 export default {
   name: 'App',
   data() {
@@ -99,7 +99,11 @@ export default {
       error: '',
       warning: '',
       sending: false,
-      keys: ['col1','col2','col3','col4','col5','col6','col7','col8']
+      keys: ['smrNo','contractNo','contractStatus','mainContract','customer','title','applicant','address',
+        'cadastralNumber','powerByTU','tuReceived','receivedToWork','projectManager','classifier','surveyor',
+        'gipExecutor','pirStatus','pirStatusDate','geoReceived','geoAgreeStatus','gnbPir','gnbPirDate',
+        'smrStart','contractEnd'
+      ]
     }
   },
   computed: {
@@ -168,7 +172,6 @@ export default {
 
           const firstSheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[firstSheetName]
-          console.log(worksheet);
           // Получаем строковый массив (header:1) — удобно брать первую (заголовки) и вторую (данные)
           const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null })
 
@@ -183,10 +186,7 @@ export default {
           // если rows.length === 1 — считаем, что это строка данных без заголовков
           let dataRow = null
           if (rows.length >= 1) {
-            dataRow = rows[1]
-            console.log(dataRow);
-            console.log(rows);
-            
+            dataRow = rows[1]           
             if (rows[2][0] != null) {
               this.warning = 'В файле найдено более одной строки данных — будет использована первая строка данных.'
             }
@@ -201,11 +201,12 @@ export default {
             return
           }
 
+          
           const normalized = []
           for (let i = 0; i < this.keys.length; i++) {
             normalized[i] = i < dataRow.length ? dataRow[i] : null
           }
-
+          console.log(normalized);
           
           const obj = {}
           this.keys.forEach((k, idx) => {
@@ -231,24 +232,43 @@ export default {
         this.error = 'Нет готового объекта для отправки'
         return
       }
+      console.log(this.parsedObject);
+      
 
       this.sending = true
+      // try {
+      //   const response = await axios.get('/api/transformer')
+      //   console.log(response);
+        
+      // } catch (error) {
+      //   console.log(error);
+        
+      // }
+
       try {
-        const resp = await fetch('/api/upload-json', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(this.parsedObject)
-        })
-
-        if (!resp.ok) {
-          const text = await resp.text().catch(() => '')
-          throw new Error(`Ошибка сервера: ${resp.status} ${text}`)
+        const resp = await axios.post('/api/transformer/letter', this.parsedObject, {
+          responseType: 'arraybuffer' // <- важно
+        });
+        const contentDisp = resp.headers && resp.headers['content-disposition'];
+        let filename = 'letter.docx';
+        if (contentDisp) {
+          const match = contentDisp.match(/filename\*=UTF-8''(.+)|filename="(.+)"|filename=(.+)/);
+          if (match) filename = decodeURIComponent(match[1] || match[2] || match[3]);
         }
+        const blob = new Blob([resp.data], {
+          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
 
-        alert('Объект успешно отправлен на сервер')
-        // По желанию можно очистить форму:
-        // this.files = []; this.parsedOk = false; this.parsedObject = null
-      } catch (err) {
+      }
+       catch (err) {
         console.error(err)
         this.error = err.message || 'Ошибка при отправке'
       } finally {
