@@ -63,15 +63,6 @@
                   </v-card-text>
 
                   <v-card-actions class="mt-auto">
-                    <!-- <v-btn
-                      small
-                      text
-                      @click="selectTemplate(tpl)"
-                      class="ma-0"
-                    >
-                      
-                    </v-btn> -->
-
                     <v-spacer></v-spacer>
 
                     <v-btn
@@ -96,20 +87,34 @@
       <v-col cols="12" md="6">
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
-            <div class="text-subtitle-2 font-weight-medium">Выбранный шаблон</div>
+            <div v-if="selectedTemplate" class="text-subtitle-4 font-weight-medium">Выбранный шаблон</div>
+            <div v-else class="text-subtitle-4 font-weight-medium">Шаблон не выбран</div>
           </div>
 <!-- 
           <pre style="max-height:260px; overflow:auto; margin:0; font-size:13px;">
 			{{ previewJson }}
           </pre> -->
-		    <v-img
-				:src="selectedTemplate.imageKey"
-				height="340"
-				class="grey lighten-4"
-				cover
-			/>
+          <v-img
+            v-if="selectedTemplate"
+            :src="selectedTemplate.imageKey"
+            height="390"
+            class="grey lighten-4"
+            cover
+          />
+          <v-img
+            v-else
+            src="https://storage.yandexcloud.net/step2002sharp/ChatGPT%20Image%2012%20%D1%81%D0%B5%D0%BD%D1%82.%202025%20%D0%B3.%2C%2010_08_03.png"
+            height="390"
+            class="grey lighten-4"
+            cover
+          />
+          
 		  <!-- Photo -->
-
+          <v-card-text>
+            <p>
+              ASdasdasdasd asdasd as
+            </p>
+          </v-card-text>
           <v-card-actions class="pt-4">
             <v-btn
               :disabled="!selectedTemplate"
@@ -117,12 +122,12 @@
               @click="clearSelection"
               small
             >
-              Clear
+              Очистить
             </v-btn>
 
             <v-spacer></v-spacer>
 
-            <v-btn
+            <!-- <v-btn
               :disabled="!selectedTemplate"
               color="primary"
               class="white--text"
@@ -130,7 +135,7 @@
               :loading="sendingId === (selectedTemplate && selectedTemplate.id)"
             >
               Send selected
-            </v-btn>
+            </v-btn> -->
           </v-card-actions>
         </v-card>
       </v-col>
@@ -157,13 +162,7 @@ export default {
       templates: [], // полученные шаблоны
       loading: false,
       error: null,
-      selectedTemplate: {
-          id: '1',
-          name: 'ООО "Энергосистемы"',
-          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
-          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
-        },
+      selectedTemplate: null,
       previewJson: '{}',
       sendingId: null, // id шаблона, который отправляется
       snackbar: {
@@ -204,7 +203,7 @@ export default {
 
     selectTemplate(tpl) {
       this.selectedTemplate = tpl;
-      // previewData может быть объектом или строкой — приводим к читаемому JSON
+      this.$emit('template-selected', this.selectedTemplate);
       try {
         this.previewJson = JSON.stringify(tpl.previewData || tpl.sampleData || {}, null, 2);
       } catch (e) {
@@ -213,6 +212,7 @@ export default {
     },
 
     clearSelection() {
+      this.$emit('template-cleared');
       this.selectedTemplate = null;
       this.previewJson = '{}';
     },
@@ -258,6 +258,20 @@ export default {
         },
         {
           id: '2',
+          name: 'ООО "Гефест"',
+          description: 'Базовый договор с местами для подписей и реквизитов.',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/default.jpg',
+          previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
+        },
+        {
+          id: '3',
+          name: 'ООО "Энергосистемы"',
+          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
+          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
+        },
+        {
+          id: '4',
           name: 'ООО "Гефест"',
           description: 'Базовый договор с местами для подписей и реквизитов.',
           imageKey: 'https://storage.yandexcloud.net/step2002sharp/default.jpg',

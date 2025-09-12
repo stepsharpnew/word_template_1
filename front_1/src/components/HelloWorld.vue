@@ -9,60 +9,62 @@
             style="max-width: 1100px; min-height: 860px;"
           >
 
-              <div class="mt-4">
-                <SelectReason/>
-              </div>
-
-            <div class="d-flex w-100 ">
-              <v-file-input
-                v-model="files"
-                label="Выбрать .xlsx файл"
-                hint="Принимаются только .xlsx"
-                accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                :multiple="false"
-                class="ma-4 pa-6 rounded-lg elevation-4"
-                style="width: 100%; max-width: 680px;"
-                @change="onFilesChange"
-                show-size
-              >
-                <template #prepend>
-                  <v-icon class="mr-3" size="32">mdi-file-excel</v-icon>
-                </template>
-              </v-file-input>
+            <div class="mt-4">
+              <SelectReason @template-selected="onTemplateSelected" @template-cleared="onTemplateCleared"/>
             </div>
-
-            <div class="d-flex justify-space-between align-center mt-6">
-              <div class="d-flex align-center">
-                <v-icon v-if="parsing" class="mr-2" spin>mdi-progress-clock</v-icon>
-                <v-icon v-else-if="parsedOk" color="success" class="mr-2">mdi-check-circle</v-icon>
-                <div class="text-caption">
-                  <span v-if="parsing">Парсинг файла...</span>
-                  <span v-else-if="parsedOk">Готов к отправке (объект сформирован)</span>
+              <div class="d-flex">
+                <div class="d-flex w-100 ">
+                  <v-file-input
+                    v-model="files"
+                    label="Выбрать .xlsx файл"
+                    hint="Принимаются только .xlsx"
+                    accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    :multiple="false"
+                    class="ma-4 pa-6 rounded-lg elevation-4"
+                    style="width: 100%; max-width: 680px;"
+                    @change="onFilesChange"
+                    show-size
+                  >
+                    <template #prepend>
+                      <v-icon class="mr-3" size="32">mdi-file-excel</v-icon>
+                    </template>
+                  </v-file-input>
                 </div>
-              </div>
 
-              <v-hover v-slot="{ hover: btnHover }">
-                <v-btn
-                  :elevation="btnHover ? 18 : 6"
-                  class="rounded-lg px-6 py-3"
-                  :disabled="!parsedOk || sending"
-                  color="primary"
-                  dark
-                  @click="handleProcess"
-                >
-                  <v-icon left v-if="sending" spin>mdi-cloud-upload</v-icon>
-                  Загрузить и конвертировать
-                </v-btn>
-              </v-hover>
+                <div class="d-flex justify-space-around align-center mt-6 flex-column">
+                  <div class="d-flex align-center">
+                    <v-icon v-if="parsing" class="mr-2" spin>mdi-progress-clock</v-icon>
+                    <v-icon v-else-if="parsedOk" color="success" class="mr-2">mdi-check-circle</v-icon>
+                    <div class="text-caption">
+                      <span v-if="parsing">Парсинг файла...</span>
+                      <span v-else-if="parsedOk">Готов к отправке (объект сформирован)</span>
+                    </div>
+                  </div>
+
+                  <v-hover v-slot="{ hover: btnHover }">
+                    <v-btn
+                      :elevation="btnHover ? 18 : 6"
+                      class="rounded-lg px-6 py-3"
+                      :disabled="!parsedOk || sending || !templateSelected"
+                      color="primary"
+                      dark
+                      @click="handleProcess"
+                    >
+                      <v-icon left v-if="sending" spin>mdi-cloud-upload</v-icon>
+                      Загрузить и конвертировать
+                    </v-btn>
+                  </v-hover>
+                </div>
+
+                <v-alert v-if="warning" type="warning" class="mt-4" density="comfortable">
+                  {{ warning }}
+                </v-alert>
+
+                <v-alert v-if="error" type="error" class="mt-4" density="comfortable">
+                  {{ error }}
+                </v-alert>
             </div>
-
-            <v-alert v-if="warning" type="warning" class="mt-4" density="comfortable">
-              {{ warning }}
-            </v-alert>
-
-            <v-alert v-if="error" type="error" class="mt-4" density="comfortable">
-              {{ error }}
-            </v-alert>
+           
           </v-card>
         </v-hover>
       </v-container>
@@ -84,6 +86,7 @@ export default {
       parsedObject: null, // итоговый объект с 8 полями
       error: '',
       warning: '',
+      templateSelected : null,
       sending: false,
       keys: ['smrNo','contractNo','contractStatus','mainContract','customer','title','applicant','address',
         'cadastralNumber','powerByTU','tuReceived','receivedToWork','projectManager','classifier','surveyor',
@@ -101,6 +104,13 @@ export default {
     }
   },
   methods: {
+    onTemplateSelected(tpl){
+      this.templateSelected = tpl
+    },
+    onTemplateCleared(){
+      this.templateSelected = null
+    },
+
     onFilesChange(newVal) {
       this.error = ''
       this.warning = ''
@@ -213,6 +223,8 @@ export default {
         this.error = 'Нет готового объекта для отправки'
         return
       }
+      console.log(this.parsedObject);
+      this.parsedObject = {...this.parsedObject,...this.templateSelected.previewData}
       console.log(this.parsedObject);
       
 
