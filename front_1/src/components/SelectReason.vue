@@ -29,20 +29,20 @@
             <template v-else>
               <v-col
                 v-for="tpl in templates"
-                :key="tpl.id"
+                :key="tpl.idTemplate"
                 cols="12"
                 sm="6"
                 md="6"
                 lg="6"
                 class="d-flex"
               >
-                <v-card class="flex-grow-1 d-flex flex-column" outlined>
+                <v-card class="flex-grow-1 d-flex flex-column" outlined v-tooltip="tpl.description">
                   <v-img
                     :src="tpl.imageKey"
                     :alt="tpl.name"
                     height="140"
                     class="grey lighten-4"
-                    cover
+                    contain
                   >
                     <template #placeholder>
                       <v-row
@@ -69,8 +69,8 @@
                       small
                       color="primary"
                       @click="selectTemplate(tpl)"
-                      :loading="sendingId === tpl.id"
-                      :disabled="sendingId === tpl.id"
+                      :loading="sendingId === tpl.idTemplate"
+                      :disabled="sendingId === tpl.idTemplate"
                       class="white--text"
                     >
                       Выбрать
@@ -83,36 +83,31 @@
         </v-card>
       </v-col>
 
-      <!-- Preview блока (как у вас исходно) -->
       <v-col cols="12" md="6">
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
             <div v-if="selectedTemplate" class="text-subtitle-4 font-weight-medium">Выбранный шаблон</div>
             <div v-else class="text-subtitle-4 font-weight-medium">Шаблон не выбран</div>
           </div>
-<!-- 
-          <pre style="max-height:260px; overflow:auto; margin:0; font-size:13px;">
-			{{ previewJson }}
-          </pre> -->
           <v-img
             v-if="selectedTemplate"
-            :src="selectedTemplate.imageKey"
-            height="390"
+            :src="selectedTemplate.mainImage"
+            height="700"
             class="grey lighten-4"
-            cover
+            contain
           />
           <v-img
             v-else
             src="https://storage.yandexcloud.net/step2002sharp/ChatGPT%20Image%2012%20%D1%81%D0%B5%D0%BD%D1%82.%202025%20%D0%B3.%2C%2010_08_03.png"
-            height="390"
+            height="667"
             class="grey lighten-4"
             cover
           />
           
 		  <!-- Photo -->
-          <v-card-text>
-            <p>
-              ASdasdasdasd asdasd as
+          <v-card-text >
+            <p v-if="selectedTemplate">
+              {{ selectedTemplate.description }}
             </p>
           </v-card-text>
           <v-card-actions class="pt-4">
@@ -126,16 +121,6 @@
             </v-btn>
 
             <v-spacer></v-spacer>
-
-            <!-- <v-btn
-              :disabled="!selectedTemplate"
-              color="primary"
-              class="white--text"
-              @click="sendTemplate(selectedTemplate)"
-              :loading="sendingId === (selectedTemplate && selectedTemplate.id)"
-            >
-              Send selected
-            </v-btn> -->
           </v-card-actions>
         </v-card>
       </v-col>
@@ -182,21 +167,10 @@ export default {
       this.error = null;
 
       try {
-        const res = await axios.get(`/api/templates`);
-
-        if (Array.isArray(res.data) && res.data.length) {
-          this.templates = res.data;
-        } else {
-          // fallback: показать несколько демонстрационных шаблонов (если сервер вернул пусто)
           this.templates = this._demoTemplates();
+          // this.showSnackbar('Не удалось загрузить шаблоны, показаны демонстрационные.', 'secondary');
         }
-      } catch (err) {
-        console.error('fetchTemplates error', err);
-        this.error = err;
-        // показываем демо-шаблоны, чтобы UI не был пустым
-        this.templates = this._demoTemplates();
-        this.showSnackbar('Не удалось загрузить шаблоны, показаны демонстрационные.', 'secondary');
-      } finally {
+      finally {
         this.loading = false;
       }
     },
@@ -218,26 +192,12 @@ export default {
     },
 
     async sendTemplate(tpl) {
-      if (!tpl || !tpl.id) {
+      if (!tpl || !tpl.idTemplate) {
         this.showSnackbar('Невалидный шаблон для отправки', 'secondary');
         return;
       }
-      this.sendingId = tpl.id;
-
-      // Пример отправки: POST `${apiBase}/send-template/:id` с телом data
-      // По соглашению отправляем `payload` — текущий previewData (можно заменить)
+      this.sendingId = tpl.idTemplate;
       const payload = tpl.previewData || tpl.sampleData || {};
-
-      try {
-        const res = await axios.post(`${this.apiBase}/send-template/${tpl.id}`, { payload });
-        // ожидаем успешный ответ
-        this.showSnackbar(res.data && res.data.message ? res.data.message : 'Шаблон отправлен', 'primary');
-      } catch (err) {
-        console.error('sendTemplate error', err);
-        this.showSnackbar('Ошибка при отправке шаблона', 'error');
-      } finally {
-        this.sendingId = null;
-      }
     },
 
     showSnackbar(text, color = 'primary') {
@@ -246,35 +206,55 @@ export default {
       this.snackbar.show = true;
     },
 
-    // Демонстрационные шаблоны (используются как fallback)
+
     _demoTemplates() {
       return [
         {
-          id: '1',
+          idTemplate: '1',
           name: 'ООО "Энергосистемы"',
-          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
+          description: 'Информирование о задержке строительства Корнеева',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
           previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
         },
         {
-          id: '2',
-          name: 'ООО "Гефест"',
-          description: 'Базовый договор с местами для подписей и реквизитов.',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/default.jpg',
+          idTemplate: '2',
+          name: 'ООО "Энергосистемы"',
+          description: 'Информирование о задержке строительства Логинова',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
           previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
         },
         {
-          id: '3',
+          idTemplate: '3',
           name: 'ООО "Энергосистемы"',
           description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
           previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
         },
         {
-          id: '4',
+          idTemplate: '4',
           name: 'ООО "Гефест"',
           description: 'Базовый договор с местами для подписей и реквизитов.',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/default.jpg',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
+        },
+        {
+          idTemplate: '5',
+          name: 'ООО "Энергосистемы"',
+          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
+          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
+        },
+        {
+          idTemplate: '6',
+          name: 'ООО "Гефест"',
+          description: 'Базовый договор с местами для подписей и реквизитов.',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
           previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
         },
       ];

@@ -127,4 +127,7 @@ export class ExcelRowDTO {
   @IsOptional()
   @IsString()
   readonly contractEnd?: string;
+
+  @ApiProperty({ example: "07.02.2025", description: "Конец договора", required: false })
+  readonly templateOptions: object;
 }

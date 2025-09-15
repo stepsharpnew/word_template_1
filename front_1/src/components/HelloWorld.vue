@@ -76,6 +76,7 @@
 import * as XLSX from 'xlsx'
 import axios from 'axios'
 import SelectReason from './SelectReason.vue'
+import { mapRowToObject } from './mapObjects'
 export default {
   name: 'App',
   data() {
@@ -173,7 +174,8 @@ export default {
           const worksheet = workbook.Sheets[firstSheetName]
           // Получаем строковый массив (header:1) — удобно брать первую (заголовки) и вторую (данные)
           const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null })
-
+          console.log(rows);
+          
           if (!rows || !rows.length) {
             this.parsing = false
             this.error = 'Файл пустой'
@@ -186,7 +188,7 @@ export default {
           } else {
             dataRow = rows[0]
           }
-
+          console.log(dataRow);
           // Если dataRow — пусто или не массив -> ошибка
           if (!Array.isArray(dataRow)) {
             this.parsing = false
@@ -194,15 +196,12 @@ export default {
             return
           }
           const normalized = []
-          for (let i = 0; i < this.keys.length; i++) {
+          for (let i = 0; i < dataRow.length; i++) {
             normalized[i] = i < dataRow.length ? dataRow[i] : null
           }
-          console.log(normalized);
           
-          const obj = {}
-          this.keys.forEach((k, idx) => {
-            obj[k] = normalized[idx]
-          })
+          const obj = mapRowToObject(normalized)
+     
 
           this.parsedObject = obj
           this.parsedOk = true
@@ -223,10 +222,8 @@ export default {
         this.error = 'Нет готового объекта для отправки'
         return
       }
+      this.parsedObject = {...this.parsedObject,...this.templateSelected}
       console.log(this.parsedObject);
-      this.parsedObject = {...this.parsedObject,...this.templateSelected.previewData}
-      console.log(this.parsedObject);
-      
 
       this.sending = true
       try {
