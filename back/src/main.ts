@@ -22,7 +22,7 @@ const document = SwaggerModule.createDocument(app, config);
 SwaggerModule.setup('/docs', app, document);
 
 
-await app.listen(process.env.PORT ? Number(process.env.PORT) : 3000);
+await app.listen(process.env.PORT ? Number(process.env.PORT) : 5000);
 console.log('Listening on', await app.getUrl());
 }
 bootstrap();
