@@ -10,8 +10,8 @@ services:
     ports:
       - "80:80"
       # - "443:443"
-    # volumes:
-    #   - './nginx.conf:/etc/nginx/nginx.conf'
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
     #   - '/etc/letsencrypt:/etc/letsencrypt'
     depends_on:
       - backend
@@ -25,11 +25,6 @@ services:
       context: ./back
     networks:
       - dev
-    # environment:
-    #   DATABASE_HOST: postgres-image
-    #   DATABASE_USER: postgres
-    #   DATABASE_PASSWORD: 12345678
-    #   DATABASE_NAME: postgres
     ports:
       - "5000:5000"
 
