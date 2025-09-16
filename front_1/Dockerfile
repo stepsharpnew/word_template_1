@@ -1,7 +1,7 @@
 FROM node:20 as build
 
 COPY package.json package.json
-RUN npm install
+RUN npm i
 COPY . .
 RUN npm run build
 
