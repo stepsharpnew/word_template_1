@@ -5,7 +5,7 @@
       <v-col cols="12" md="6">
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
-            <div class="text-subtitle-2 font-weight-medium primary--text">
+            <div class="text-h5 font-weight-medium text-medium-emphasis">
               Выберите шаблон Word
             </div>
             <!-- <div class="text-caption grey--text">Шаблоны: {{ templates.length || '0' }}</div> -->
@@ -86,40 +86,39 @@
       <v-col cols="12" md="6">
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
-            <div v-if="selectedTemplate" class="text-subtitle-4 font-weight-medium">Выбранный шаблон</div>
-            <div v-else class="text-subtitle-4 font-weight-medium">Шаблон не выбран</div>
+            <div v-if="selectedTemplate" class="text-h5 font-weight-medium text-medium-emphasis">Выбранный шаблон</div>
+            <div v-else class="text-h5 font-weight-medium text-medium-emphasis">Шаблон не выбран</div>
           </div>
           <v-img
             v-if="selectedTemplate"
             :src="selectedTemplate.mainImage"
-            height="700"
+            height="860"
             class="grey lighten-4"
             contain
           />
           <v-img
             v-else
             src="https://storage.yandexcloud.net/step2002sharp/ChatGPT%20Image%2012%20%D1%81%D0%B5%D0%BD%D1%82.%202025%20%D0%B3.%2C%2010_08_03.png"
-            height="667"
+            height="860"
             class="grey lighten-4"
             cover
           />
           
 		  <!-- Photo -->
           <v-card-text >
-            <p v-if="selectedTemplate">
+            <p v-if="selectedTemplate" class="text-h5 font-weight-medium" style="color:darkgray">
               {{ selectedTemplate.description }}
             </p>
           </v-card-text>
           <v-card-actions class="pt-4">
             <v-btn
               :disabled="!selectedTemplate"
-              color="secondary"
+              color="red-darken-2"
               @click="clearSelection"
               small
             >
               Очистить
             </v-btn>
-
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -222,23 +221,23 @@ export default {
           name: 'ООО "Энергосистемы"',
           description: 'Информирование о задержке строительства Логинова',
           imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5073.png',
           previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
         },
         {
           idTemplate: '3',
-          name: 'ООО "Энергосистемы"',
-          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
+          name: 'ООО "Гефест"',
+          description: 'ТСН СНТ Художник о недопуске',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/4396.png',
           previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
         },
         {
           idTemplate: '4',
           name: 'ООО "Гефест"',
-          description: 'Базовый договор с местами для подписей и реквизитов.',
+          description: 'О задержке сроков выполнения договора',
           imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/4955.png',
           previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
         },
         {
@@ -251,6 +250,22 @@ export default {
         },
         {
           idTemplate: '6',
+          name: 'ООО "Гефест"',
+          description: 'Базовый договор с местами для подписей и реквизитов.',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
+        },
+        {
+          idTemplate: '7',
+          name: 'ООО "Энергосистемы"',
+          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
+          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
+        },
+        {
+          idTemplate: '8',
           name: 'ООО "Гефест"',
           description: 'Базовый договор с местами для подписей и реквизитов.',
           imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',

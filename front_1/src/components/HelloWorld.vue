@@ -1,12 +1,12 @@
 <template>
   <v-app class="bg-background fill-height">
     <v-main>
-      <v-container class="d-flex justify-center align-center" style="min-height: 86vh;">
+      <v-container class="d-flex justify-center align-center" style="min-height: 90vh;">
         <v-hover v-slot="{ hover }">
           <v-card
             :elevation="hover ? 20 : 8"
             class="rounded-xl pa-8 w-100"
-            style="max-width: 1100px; min-height: 860px;"
+            style="max-width: 1500px; min-height: 800px; min-width: 1450px;"
           >
 
             <div class="mt-4">

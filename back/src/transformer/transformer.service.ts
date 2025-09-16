@@ -28,7 +28,8 @@ export class TransformerService {
       outgoingDate: dto.outgoingDate ?? '',
       contractEnd: this.commonService.formatDate(dto.contractEnd) ?? '',
       res: dto.res,
-      title_cleared: this.commonService.extractMainObject(dto.title)
+      title_cleared: this.commonService.extractMainObject(dto.title),
+      applicant: dto.applicant
     };
     console.log(data);
     
