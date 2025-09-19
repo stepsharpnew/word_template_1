@@ -213,7 +213,7 @@ export default {
           name: 'ООО "Энергосистемы"',
           description: 'Информирование о задержке строительства Корнеева',
           imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5073.png',
           previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
         },
         {
@@ -221,7 +221,7 @@ export default {
           name: 'ООО "Энергосистемы"',
           description: 'Информирование о задержке строительства Логинова',
           imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5073.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
           previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
         },
         {
@@ -242,34 +242,18 @@ export default {
         },
         {
           idTemplate: '5',
-          name: 'ООО "Энергосистемы"',
-          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
+          name: 'ООО "Гефест"',
+          description: 'Информирование о задержке ООО Платенхаус',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5049.png',
+          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
           previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
         },
         {
           idTemplate: '6',
-          name: 'ООО "Гефест"',
-          description: 'Базовый договор с местами для подписей и реквизитов.',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
-          previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
-        },
-        {
-          idTemplate: '7',
           name: 'ООО "Энергосистемы"',
-          description: 'Шаблон для выставления счетов — содержит поля client, items, total.',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          description: 'Информирование о задержке строительства',
           imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
-          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
-        },
-        {
-          idTemplate: '8',
-          name: 'ООО "Гефест"',
-          description: 'Базовый договор с местами для подписей и реквизитов.',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
+          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5257.png',
           previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
         },
       ];

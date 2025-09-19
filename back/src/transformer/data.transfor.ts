@@ -8,5 +8,3 @@ export function formatDate(input) {
     ];
     return `«${day}» ${months[parseInt(month, 10) - 1]} ${year} г.`;
   }
-  
-  console.log(formatDate("07.02ю2025")); 

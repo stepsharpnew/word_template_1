@@ -174,7 +174,6 @@ export default {
           const worksheet = workbook.Sheets[firstSheetName]
           // Получаем строковый массив (header:1) — удобно брать первую (заголовки) и вторую (данные)
           const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null })
-          console.log(rows);
           
           if (!rows || !rows.length) {
             this.parsing = false
@@ -188,7 +187,6 @@ export default {
           } else {
             dataRow = rows[0]
           }
-          console.log(dataRow);
           // Если dataRow — пусто или не массив -> ошибка
           if (!Array.isArray(dataRow)) {
             this.parsing = false
@@ -223,7 +221,6 @@ export default {
         return
       }
       this.parsedObject = {...this.parsedObject,...this.templateSelected}
-      console.log(this.parsedObject);
 
       this.sending = true
       try {
