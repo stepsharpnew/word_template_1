@@ -227,12 +227,8 @@ export default {
         const resp = await axios.post('/api/transformer/letter', this.parsedObject, {
           responseType: 'arraybuffer' // <- важно
         });
-        const contentDisp = resp.headers && resp.headers['content-disposition'];
-        let filename = 'letter.docx';
-        if (contentDisp) {
-          const match = contentDisp.match(/filename\*=UTF-8''(.+)|filename="(.+)"|filename=(.+)/);
-          if (match) filename = decodeURIComponent(match[1] || match[2] || match[3]);
-        }
+        console.log(this.parsedObject);
+        const filename = `${this.parsedObject.contractNo}_${new Date().toLocaleDateString('ru-RU')}.docx`;
         const blob = new Blob([resp.data], {
           type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         });
@@ -244,8 +240,8 @@ export default {
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
-
       }
+
        catch (err) {
         console.error(err)
         this.error = err.message || 'Ошибка при отправке'

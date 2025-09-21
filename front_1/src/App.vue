@@ -11,7 +11,7 @@ import HelloWorld from './components/HelloWorld.vue'
         alt="EnergoSystems logo" 
       />
     </a>
-    <div class="title">Програмное обеспечение города Солнечногорск</div>
+    <!-- <div class="title">Програмное обеспечение города Солнечногорск</div> -->
   </div>
 
   <HelloWorld />
