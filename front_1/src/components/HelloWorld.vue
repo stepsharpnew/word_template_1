@@ -199,9 +199,7 @@ export default {
           }
           
           const obj = mapRowToObject(normalized)
-     
-
-          this.parsedObject = obj
+          this.parsedObject = obj      
           this.parsedOk = true
           this.parsing = false
         } catch (err) {
@@ -224,6 +222,8 @@ export default {
 
       this.sending = true
       try {
+        console.log(this.parsedObject);
+        
         const resp = await axios.post('/api/transformer/letter', this.parsedObject, {
           responseType: 'arraybuffer' // <- важно
         });

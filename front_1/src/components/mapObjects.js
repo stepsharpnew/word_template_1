@@ -23,8 +23,9 @@ export function mapRowToObject(normalized){
       geoAgreeStatus: 21,
       gnbPir: 26,
       gnbPirDate: 27,
-      smrStart: 64,        // уточни индекс
-      contractEnd: 65
+      smrStart: 64,  
+      contractDate:65,      // уточни индекс
+      contractEnd: 66
     };
   
     const obj = {};
