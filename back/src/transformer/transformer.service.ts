@@ -4,6 +4,7 @@ import * as path from 'path';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { CommonService } from 'src/common/common.service';
+import reasons from './reasons';
 
 @Injectable()
 export class TransformerService {
@@ -44,5 +45,10 @@ export class TransformerService {
     }
 
     return doc.getZip().generate({ type: 'nodebuffer' });
+  }
+
+  async getReasons(){
+    console.log(reasons);
+    return reasons
   }
 }

@@ -80,10 +80,13 @@
               </v-col>
             </template>
           </v-row>
+          <ReasonsAutoComplete/>
         </v-card>
       </v-col>
 
+      
       <v-col cols="12" md="6">
+
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
             <div v-if="selectedTemplate" class="text-h5 font-weight-medium text-medium-emphasis">Выбранный шаблон</div>
@@ -134,7 +137,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import ReasonsAutoComplete from './ReasonsAutoComplete.vue';
 
 export default {
   name: 'TemplatePicker',
@@ -156,6 +159,9 @@ export default {
         timeout: 4000
       }
     };
+  },
+  components : {
+    ReasonsAutoComplete
   },
   mounted() {
     this.fetchTemplates();

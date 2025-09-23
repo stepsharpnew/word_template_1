@@ -23,8 +23,8 @@ export class TransformerController {
     res.send(buffer);
   }
 
-  @Get()
+  @Get('reasons')
   async getTry(){
-    return "GoodSeeYour"
+    return this.transformerService.getReasons()
   }
 }
