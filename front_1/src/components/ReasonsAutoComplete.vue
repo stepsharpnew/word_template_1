@@ -1,150 +1,134 @@
 <template>
-    <v-card
-      class="mx-auto my-4"
-      color="#f5f7fa"
-      elevation="4"
-      max-width="650"
-      rounded="xl"
-    >
-      <v-toolbar color="#4a90e2" dark flat v-if="!hasSaved">
-        <v-btn icon @click="collapsed = !collapsed">
-          <v-icon>{{ collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up' }}</v-icon>
-        </v-btn>
+    <div>
+      <v-btn color="primary" @click="dialog = true">Выбрать причины</v-btn>
   
-        <v-toolbar-title class="font-weight-light">Причины не выбраны</v-toolbar-title>
-        <v-spacer />
-      </v-toolbar>
-
-      <v-toolbar color="#3431a2" dark flat v-else>
-        <v-btn icon @click="collapsed = !collapsed">
-          <v-icon>{{ collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up' }}</v-icon>
-        </v-btn>
-        <v-toolbar-title class="font-weight-light">Причины выбраны</v-toolbar-title>
-        <v-spacer />
-      </v-toolbar>
+      <v-dialog v-model="dialog" max-width="1200">
+        <v-card>
+          <v-card-title>
+            <span class="text-h6">Выберите причины в порядке очередности</span>
+          </v-card-title>
   
-      <v-expand-transition>
-        <div v-show="!collapsed">
           <v-card-text>
-            <v-autocomplete
-              v-model="selectedReasons"
-              :items="states"
-              item-title="text"
-              item-value="id"
-              return-object
-              multiple
-              chips
-              closable-chips
-              label="Выберите причины (макс. 5)"
-              :counter="5"
-              :rules="[limitSelection]"
-              variant="outlined"
-              density="comfortable"
-              :menu-props="menuProps"
-              class="autocomplete-fixed"
-            >
-              <!-- ВАЖНО: в Vuetify 3 слот #item даёт props — используем { item, props } -->
-              <template #item="{ item, props }">
-                <!-- применяем v-bind="props" (вместо старого v-bind="attrs" v-on="on") -->
-                <v-list-item v-bind="props" dense>
-                  <!-- v-list-item-content отсутствует в V3 — пишем title/subtitle прямо -->
-                  <v-list-item-title class="truncate" :title="item.text">
-                    {{ item.text }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle v-if="item.description" class="truncate" :title="item.description">
-                    {{ item.description }}
-                  </v-list-item-subtitle>
-                </v-list-item>
-              </template>
+            <v-row>
+              <v-col cols="6">
+                <v-card
+                  v-for="reason in leftColumn"
+                  :key="reason.id"
+                  class="ma-1 pa-3 clickable"
+                  :color="getReasonColor(reason)"
+                  @click="selectReason(reason)"
+                >
+                  <v-row align="center">
+                    <v-col>
+                      {{ reason.text }}
+                    </v-col>
+                    <v-col cols="auto" v-if="isSelected(reason)">
+                      <v-chip small color="primary" text-color="white">
+                        {{ getOrder(reason) }}
+                      </v-chip>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-col>
   
-              <!-- Слот выбора: тоже используем props (если он передаётся) и тултип для полного текста -->
-              <template #selection="{ item, props }">
-                <v-tooltip location="top">
-                  <template #activator="{ props: tipProps }">
-                    <!-- не используем v-on="on" -->
-                    <v-chip small class="chip-truncate" v-bind="tipProps">
-                      {{ item.text }}
-                    </v-chip>
-                  </template>
-                  <span>{{ item.text }}</span>
-                </v-tooltip>
-              </template>
-            </v-autocomplete>
+              <v-col cols="6">
+                <v-card
+                  v-for="reason in rightColumn"
+                  :key="reason.id"
+                  class="ma-1 pa-3 clickable"
+                  :color="getReasonColor(reason)"
+                  @click="selectReason(reason)"
+                >
+                  <v-row align="center">
+                    <v-col>
+                      {{ reason.text }}
+                    </v-col>
+                    <v-col cols="auto" v-if="isSelected(reason) ">
+                      <v-chip small color="primary" text-color="white" plain>
+                        {{ getOrder(reason) }}
+                      </v-chip>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card-text>
   
-          <v-divider />
+          <v-divider></v-divider>
   
           <v-card-actions>
             <v-spacer />
-            <v-btn color="primary" variant="elevated" @click="save">Сохранить</v-btn>
+            <v-btn text @click="dialog = false">Отмена</v-btn>
+            <v-btn color="primary" @click="save">Сохранить</v-btn>
           </v-card-actions>
-        </div>
-      </v-expand-transition>
-  
-    </v-card>
+        </v-card>
+      </v-dialog>
+    </div>
   </template>
   
   <script>
-  import axios from "axios"
+  import axios from "axios";
   
   export default {
-    data: () => ({
-      collapsed: false,
-      hasSaved: false,
-      selectedReasons: [],
-      states: [],
-      menuProps: {
-        maxHeight: 320,
-        maxWidth: 680,
-        offsetY: true,
+    data() {
+      return {
+        dialog: false,
+        reasons: [],
+        selectedReasons: [],
+      };
+    },
+    computed: {
+      leftColumn() {
+        return this.reasons.filter((_, i) => i % 2 === 0);
       },
-    }),
-  
+      rightColumn() {
+        return this.reasons.filter((_, i) => i % 2 !== 0);
+      },
+    },
     async mounted() {
       try {
-        const res = await axios.get("/api/transformer/reasons")
-        const data = res.data
-        if (Array.isArray(data)) {
-          this.states = data
-        } else if (data && typeof data === "object") {
-          this.states = Object.keys(data).map((k) => data[k])
-        }
+        const res = await axios.get("/api/transformer/reasons");
+        this.reasons = Array.isArray(res.data)
+          ? res.data
+          : Object.values(res.data || {});
       } catch (e) {
-        console.error("Ошибка загрузки:", e)
+        console.error("Ошибка загрузки:", e);
       }
     },
-  
     methods: {
-      save() {
-        this.hasSaved = true
-        const payload = { reasons: this.selectedReasons.map((r) => r.id) }
-        console.log("Отправляем:", payload)
-        this.collapsed = !this.collapsed
+      selectReason(reason) {
+        if (!this.isSelected(reason)) {
+          this.selectedReasons.push(reason);
+        } else {
+          const index = this.selectedReasons.findIndex(r => r.id === reason.id);
+          if (index !== -1) this.selectedReasons.splice(index, 1);
+        }
       },
-      limitSelection(value) {
-        return value && value.length > 5 ? "Можно выбрать максимум 5 причин" : true
+      isSelected(reason) {
+        return this.selectedReasons.some((r) => r.id === reason.id);
+      },
+      getOrder(reason) {
+        const index = this.selectedReasons.findIndex(r => r.id === reason.id);
+        return index + 1;
+      },
+      getReasonColor(reason) {
+        return this.isSelected(reason) ? "#d1e8ff" : "#ffffff";
+      },
+      save() {
+        console.log("Сохраненные причины:", this.selectedReasons.map(r => r.id));
+        this.dialog = false;
       },
     },
-  }
+  };
   </script>
   
   <style scoped>
-  .truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
+  .clickable {
+    cursor: pointer;
+    transition: background-color 0.2s;
   }
-  
-  .chip-truncate {
-    max-width: 220px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .autocomplete-fixed {
-    max-width: 100%;
+  .clickable:hover {
+    background-color: #e6f0ff;
   }
   </style>
   
