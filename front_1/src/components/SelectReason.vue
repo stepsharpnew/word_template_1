@@ -3,7 +3,7 @@
     <v-row class="pa-4" dense>
       <!-- Список шаблонов -->
       <v-col cols="12" md="6">
-        <v-card class="pa-4 elevation-2" outlined>
+        <v-card class="pa-4 elevation-2" outlined style="min-height: 1100px;">
           <div class="d-flex justify-space-between align-center mb-2">
             <div class="text-h5 font-weight-medium text-medium-emphasis">
               Выберите шаблон Word
@@ -80,7 +80,19 @@
               </v-col>
             </template>
           </v-row>
-          <ReasonsAutoComplete/>
+          <v-divider class="ma-4" v-if="reasons">Причины успешно выбраны</v-divider>
+          <v-divider class="ma-4" v-else>Причины не выбраны</v-divider>
+          <ReasonsAutoComplete @selectedReasons="selectedReasons" @reasonsCleared="reasonsCleared" />
+          <div v-for="(reason, index) in reasons" 
+            :key="reason.id" 
+            class="mb-2"
+          >
+            <v-card class="pa-3 rounded-lg shadow-sm">
+              <v-card-text class="text-base font-medium">
+                {{ index + 1 }}. {{ reason.text }}
+              </v-card-text>
+            </v-card>
+          </div>
         </v-card>
       </v-col>
 
@@ -157,7 +169,8 @@ export default {
         text: '',
         color: 'primary',
         timeout: 4000
-      }
+      },
+      reasons : null,
     };
   },
   components : {
@@ -170,10 +183,8 @@ export default {
     async fetchTemplates() {
       this.loading = true;
       this.error = null;
-
       try {
           this.templates = this._demoTemplates();
-          // this.showSnackbar('Не удалось загрузить шаблоны, показаны демонстрационные.', 'secondary');
         }
       finally {
         this.loading = false;
@@ -188,6 +199,15 @@ export default {
       } catch (e) {
         this.previewJson = String(tpl.previewData || tpl.sampleData || {});
       }
+    },
+    selectedReasons(reasons){
+      this.$emit('reasons-selected', reasons);
+      this.reasons = reasons
+      console.log(this.reasons);
+    },
+    reasonsCleared(){
+      this.reasons = null
+      this.$emit('reasons-cleared');
     },
 
     clearSelection() {

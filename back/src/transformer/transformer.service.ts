@@ -8,17 +8,16 @@ import reasons from './reasons';
 
 @Injectable()
 export class TransformerService {
-  constructor (private commonService: CommonService){}
-
+  constructor(private commonService: CommonService) {}
 
   async generateLetter(dto: any): Promise<Buffer> {
-    const tplPath = path.resolve(process.cwd(), this.commonService.switchReasonsTemplate(dto.idTemplate));
+    const tplPath = path.resolve(
+      process.cwd(),
+      this.commonService.switchReasonsTemplate(dto.idTemplate),
+    );
     const content = fs.readFileSync(tplPath, 'binary');
     const zip = new PizZip(content);
     const doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
-    console.log(dto);
-    
-
 
     const data = {
       contractNo: dto.contractNo ?? '',
@@ -30,12 +29,19 @@ export class TransformerService {
       contractEnd: this.commonService.formatDate(dto.contractEnd) ?? '',
       res: dto.res,
       title_cleared: this.commonService.extractMainObject(dto.title),
-      applicant: dto.applicant
+      applicant: dto.applicant,
+      ...this.commonService.containReason(dto.reasons),
     };
-    console.log(data);
-    
+
     try {
       doc.render(data);
+      const bufferAfterFirst = doc.getZip().generate({ type: 'nodebuffer' });
+
+      const zip2 = new PizZip(bufferAfterFirst);
+      const doc2 = new Docxtemplater(zip2, { paragraphLoop: true, linebreaks: true });
+      doc2.render(data);
+
+      return doc2.getZip().generate({ type: 'nodebuffer' });
     } catch (err: any) {
       console.error('Docxtemplater render error', {
         message: err.message,
@@ -43,12 +49,9 @@ export class TransformerService {
       });
       throw err;
     }
-
-    return doc.getZip().generate({ type: 'nodebuffer' });
   }
 
-  async getReasons(){
-    console.log(reasons);
-    return reasons
+  async getReasons() {
+    return reasons;
   }
 }

@@ -1,7 +1,12 @@
 <template>
-    <div>
-      <v-btn color="primary" @click="dialog = true">Выбрать причины</v-btn>
-  
+    <div class="my-5">
+      <v-btn color="primary" @click="dialog = true" class="mr-5">Выбрать причины</v-btn>
+      <v-btn
+        color="red-darken-2"
+        @click="clearReasons"
+      >
+        Очистить
+      </v-btn>
       <v-dialog v-model="dialog" max-width="1200">
         <v-card>
           <v-card-title>
@@ -115,9 +120,13 @@
         return this.isSelected(reason) ? "#d1e8ff" : "#ffffff";
       },
       save() {
-        console.log("Сохраненные причины:", this.selectedReasons.map(r => r.id));
         this.dialog = false;
+        this.$emit('selectedReasons', this.selectedReasons)
       },
+      clearReasons(){
+        this.selectedReasons = []
+        this.$emit('reasonsCleared')
+      }
     },
   };
   </script>

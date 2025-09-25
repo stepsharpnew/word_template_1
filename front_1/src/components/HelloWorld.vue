@@ -10,7 +10,12 @@
           >
 
             <div class="mt-4">
-              <SelectReason @template-selected="onTemplateSelected" @template-cleared="onTemplateCleared"/>
+              <SelectReason 
+                @template-selected="onTemplateSelected" 
+                @template-cleared="onTemplateCleared"
+                @reasons-selected="onReasonsSelected"
+                @reasons-cleared="onReasonsCleared"
+                />
             </div>
               <div class="d-flex">
                 <div class="d-flex w-100 ">
@@ -93,7 +98,9 @@ export default {
         'cadastralNumber','powerByTU','tuReceived','receivedToWork','projectManager','classifier','surveyor',
         'gipExecutor','pirStatus','pirStatusDate','geoReceived','geoAgreeStatus','gnbPir','gnbPirDate',
         'smrStart','contractEnd'
-      ]
+      ],
+      reasons : null,
+
     }
   },
   components : {
@@ -111,13 +118,17 @@ export default {
     onTemplateCleared(){
       this.templateSelected = null
     },
-
+    onReasonsSelected(reasons){
+      this.reasons = reasons
+    },
+    onReasonsCleared(){
+      this.reasons = null
+    },
     onFilesChange(newVal) {
       this.error = ''
       this.warning = ''
       this.parsedOk = false
       this.parsedObject = null
-
 
       let files = newVal && newVal.target && newVal.target.files
         ? Array.from(newVal.target.files)
@@ -218,16 +229,16 @@ export default {
         this.error = 'Нет готового объекта для отправки'
         return
       }
-      this.parsedObject = {...this.parsedObject,...this.templateSelected}
-
+      this.parsedObject = {...this.parsedObject,...this.templateSelected,reasons : this.reasons}
+      console.log(this.parsedObject);
+      
       this.sending = true
       try {
-        console.log(this.parsedObject);
         
         const resp = await axios.post('/api/transformer/letter', this.parsedObject, {
           responseType: 'arraybuffer' // <- важно
         });
-        console.log(this.parsedObject);
+        
         const filename = `${this.parsedObject.contractNo}_${new Date().toLocaleDateString('ru-RU')}.docx`;
         const blob = new Blob([resp.data], {
           type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'

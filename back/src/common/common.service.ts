@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import reasons, { Reason } from 'src/transformer/reasons';
 
 @Injectable()
 export class CommonService {
@@ -16,7 +17,7 @@ export class CommonService {
     switchReasonsTemplate(idTempl : string):string{
         switch (idTempl) {
             case '1':
-                return "templates/5073.docx"
+                return "templates_train/5073.docx"
             case "2":
                 return "templates/3824.docx"
             case "3":
@@ -29,7 +30,6 @@ export class CommonService {
                 return "templates/5073.docx"
             default:
                 return "templates/5073.docx"
-
         }
     }
     extractMainObject(title: string): string | null {
@@ -49,4 +49,21 @@ export class CommonService {
 
         return normalized;
     }
+
+
+    containReason(recivedReasons: Reason[]) {
+        const reasonsMap = new Map<number, string>(reasons.map(r => [r.id, r.text]));
+        const texts = recivedReasons
+            .map(rr => reasonsMap.get(rr.id))
+            .filter((t): t is string => typeof t === 'string');
+    
+        // формируем объект res1..res5
+        const result: Record<string, string | null> = {};
+        for (let i = 0; i < 5; i++) {
+            result[`reason${i + 1}`] = texts[i] ?? null;
+        }
+        return result;
+    }
+    
+
 }
