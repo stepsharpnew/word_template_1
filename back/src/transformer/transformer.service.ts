@@ -30,7 +30,7 @@ export class TransformerService {
       res: dto.res,
       title_cleared: this.commonService.extractMainObject(dto.title),
       applicant: dto.applicant,
-      ...this.commonService.containReason(dto.reasons),
+      ...this.commonService.containReason(dto.reasons,dto),
     };
 
     try {

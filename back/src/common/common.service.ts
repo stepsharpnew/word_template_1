@@ -51,19 +51,27 @@ export class CommonService {
     }
 
 
-    containReason(recivedReasons: Reason[]) {
+    containReason(recivedReasons: Reason[], data: Record<string, any>) {
         const reasonsMap = new Map<number, string>(reasons.map(r => [r.id, r.text]));
         const texts = recivedReasons
             .map(rr => reasonsMap.get(rr.id))
             .filter((t): t is string => typeof t === 'string');
-    
-        // формируем объект res1..res5
+
         const result: Record<string, string | null> = {};
         for (let i = 0; i < 5; i++) {
-            result[`reason${i + 1}`] = texts[i] ?? null;
+            let text = texts[i] ?? null;
+            if (text) {
+                text = (text ?? '')
+                .replace('{contractEnd}', this.formatDate(data.contractEnd) ?? '')
+                .replace('{title_cleared}', this.extractMainObject(data.title) ?? '')
+                .replace('{res}', data.res ?? '');
+
+            }else{
+                text = ''
+            }
+            result[`reason${i + 1}`] = text;
+            
         }
         return result;
     }
-    
-
 }
