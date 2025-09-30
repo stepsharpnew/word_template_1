@@ -28,15 +28,19 @@ export class CommonService {
       case '1':
         return 'templates_train/5073.docx';
       case '2':
-        return 'templates/3824.docx';
-      case '3':
-        return 'templates/4396.docx';
-      case '4':
-        return 'templates/4955.docx';
-      case '5':
-        return 'templates/5049.docx';
-      case '6':
-        return 'templates/5073.docx';
+        return 'templates_train/4955.docx';
+      case '1':
+      //   return 'templates_train/5073.docx';
+      // case '2':
+      //   return 'templates/3824.docx';
+      // case '3':
+      //   return 'templates/4396.docx';
+      // case '4':
+      //   return 'templates/4955.docx';
+      // case '5':
+      //   return 'templates/5049.docx';
+      // case '6':
+      //   return 'templates/5073.docx';
       default:
         return 'templates/5073.docx';
     }
@@ -75,7 +79,8 @@ export class CommonService {
         text = (text ?? '')
           .replace('{contractEnd}', this.formatDate(data.contractEnd) ?? '')
           .replace('{title_cleared}', this.extractMainObject(data.title) ?? '')
-          .replace('{res}', data.res ?? '');
+          .replace('{res}', data.res ?? '')
+          .replace('{applicant}', data.applicant ?? '');
       } else {
         text = '';
       }

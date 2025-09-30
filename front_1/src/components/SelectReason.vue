@@ -3,7 +3,7 @@
     <v-row class="pa-4" dense>
       <!-- Список шаблонов -->
       <v-col cols="12" md="6">
-        <v-card class="pa-4 elevation-2" outlined style="min-height: 1100px;">
+        <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
             <div class="text-h5 font-weight-medium text-medium-emphasis">
               Выберите шаблон Word
@@ -14,7 +14,10 @@
           <v-row dense>
             <template v-if="loading">
               <v-col cols="12" class="d-flex justify-center py-6">
-                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
               </v-col>
             </template>
 
@@ -36,7 +39,11 @@
                 lg="6"
                 class="d-flex"
               >
-                <v-card class="flex-grow-1 d-flex flex-column" outlined v-tooltip="tpl.description">
+                <v-card
+                  class="flex-grow-1 d-flex flex-column"
+                  outlined
+                  v-tooltip="tpl.description"
+                >
                   <v-img
                     :src="tpl.imageKey"
                     :alt="tpl.name"
@@ -50,14 +57,22 @@
                         align="center"
                         justify="center"
                       >
-                        <v-progress-circular indeterminate color="secondary"></v-progress-circular>
+                        <v-progress-circular
+                          indeterminate
+                          color="secondary"
+                        ></v-progress-circular>
                       </v-row>
                     </template>
                   </v-img>
 
                   <v-card-text class="py-2">
-                    <div class="font-weight-medium subtitle-2">{{ tpl.name }}</div>
-                    <div class="text-caption grey--text text-truncate" style="max-height: 3.6em; overflow:hidden;">
+                    <div class="font-weight-medium subtitle-2">
+                      {{ tpl.name }}
+                    </div>
+                    <div
+                      class="text-caption grey--text text-truncate"
+                      style="max-height: 3.6em; overflow: hidden"
+                    >
                       {{ tpl.description }}
                     </div>
                   </v-card-text>
@@ -80,48 +95,59 @@
               </v-col>
             </template>
           </v-row>
-          <v-divider class="ma-4" v-if="reasons">Причины успешно выбраны</v-divider>
-          <v-divider class="ma-4" v-else>Причины не выбраны</v-divider>
-          <ReasonsAutoComplete @selectedReasons="selectedReasons" @reasonsCleared="reasonsCleared" />
-          <div v-for="(reason, index) in reasons" 
-            :key="reason.id" 
-            class="mb-2"
+          <v-divider class="ma-4" v-if="reasons"
+            >Причины успешно выбраны</v-divider
           >
+          <v-divider class="ma-4" v-else>Причины не выбраны</v-divider>
+          <ReasonsAutoComplete
+            @selectedReasons="selectedReasons"
+            @reasonsCleared="reasonsCleared"
+          />
+          <div v-for="(reason, index) in reasons" :key="reason.id" class="mb-2">
             <v-card class="pa-3 rounded-lg shadow-sm">
               <v-card-text class="text-base font-medium">
-                {{ index + 1 }}. {{ reason.text }}
+                {{ index + 1 }}. {{ reason.description }}
               </v-card-text>
             </v-card>
           </div>
         </v-card>
       </v-col>
 
-      
       <v-col cols="12" md="6">
-
         <v-card class="pa-4 elevation-2" outlined>
           <div class="d-flex justify-space-between align-center mb-2">
-            <div v-if="selectedTemplate" class="text-h5 font-weight-medium text-medium-emphasis">Выбранный шаблон</div>
-            <div v-else class="text-h5 font-weight-medium text-medium-emphasis">Шаблон не выбран</div>
+            <div
+              v-if="selectedTemplate"
+              class="text-h5 font-weight-medium text-medium-emphasis"
+            >
+              Выбранный шаблон
+            </div>
+            <div v-else class="text-h5 font-weight-medium text-medium-emphasis">
+              Шаблон не выбран
+            </div>
           </div>
           <v-img
             v-if="selectedTemplate"
             :src="selectedTemplate.mainImage"
-            height="860"
+            height="660"
             class="grey lighten-4"
             contain
           />
           <v-img
             v-else
             src="https://storage.yandexcloud.net/step2002sharp/ChatGPT%20Image%2012%20%D1%81%D0%B5%D0%BD%D1%82.%202025%20%D0%B3.%2C%2010_08_03.png"
-            height="860"
+            height="660"
             class="grey lighten-4"
             cover
           />
-          
-		  <!-- Photo -->
-          <v-card-text >
-            <p v-if="selectedTemplate" class="text-h5 font-weight-medium" style="color:darkgray">
+
+          <!-- Photo -->
+          <v-card-text>
+            <p
+              v-if="selectedTemplate"
+              class="text-h5 font-weight-medium"
+              style="color: darkgray"
+            >
               {{ selectedTemplate.description }}
             </p>
           </v-card-text>
@@ -140,8 +166,11 @@
       </v-col>
     </v-row>
 
-
-    <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="snackbar.timeout"
+      :color="snackbar.color"
+    >
       {{ snackbar.text }}
       <v-btn text @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
@@ -149,10 +178,10 @@
 </template>
 
 <script>
-import ReasonsAutoComplete from './ReasonsAutoComplete.vue';
+import ReasonsAutoComplete from "./ReasonsAutoComplete.vue";
 
 export default {
-  name: 'TemplatePicker',
+  name: "TemplatePicker",
   props: {
     // Базовый URL API (настраиваемый)
   },
@@ -162,19 +191,19 @@ export default {
       loading: false,
       error: null,
       selectedTemplate: null,
-      previewJson: '{}',
+      previewJson: "{}",
       sendingId: null, // id шаблона, который отправляется
       snackbar: {
         show: false,
-        text: '',
-        color: 'primary',
-        timeout: 4000
+        text: "",
+        color: "primary",
+        timeout: 4000,
       },
-      reasons : null,
+      reasons: null,
     };
   },
-  components : {
-    ReasonsAutoComplete
+  components: {
+    ReasonsAutoComplete,
   },
   mounted() {
     this.fetchTemplates();
@@ -184,106 +213,110 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-          this.templates = this._demoTemplates();
-        }
-      finally {
+        this.templates = this._demoTemplates();
+      } finally {
         this.loading = false;
       }
     },
 
     selectTemplate(tpl) {
       this.selectedTemplate = tpl;
-      this.$emit('template-selected', this.selectedTemplate);
+      this.$emit("template-selected", this.selectedTemplate);
       try {
-        this.previewJson = JSON.stringify(tpl.previewData || tpl.sampleData || {}, null, 2);
+        this.previewJson = JSON.stringify(
+          tpl.previewData || tpl.sampleData || {},
+          null,
+          2
+        );
       } catch (e) {
         this.previewJson = String(tpl.previewData || tpl.sampleData || {});
       }
     },
-    selectedReasons(reasons){
-      this.$emit('reasons-selected', reasons);
-      this.reasons = reasons
+    selectedReasons(reasons) {
+      this.$emit("reasons-selected", reasons);
+      this.reasons = reasons;
       console.log(this.reasons);
     },
-    reasonsCleared(){
-      this.reasons = null
-      this.$emit('reasons-cleared');
+    reasonsCleared() {
+      this.reasons = null;
+      this.$emit("reasons-cleared");
     },
 
     clearSelection() {
-      this.$emit('template-cleared');
+      this.$emit("template-cleared");
       this.selectedTemplate = null;
-      this.previewJson = '{}';
+      this.previewJson = "{}";
     },
 
     async sendTemplate(tpl) {
       if (!tpl || !tpl.idTemplate) {
-        this.showSnackbar('Невалидный шаблон для отправки', 'secondary');
+        this.showSnackbar("Невалидный шаблон для отправки", "secondary");
         return;
       }
       this.sendingId = tpl.idTemplate;
       const payload = tpl.previewData || tpl.sampleData || {};
     },
 
-    showSnackbar(text, color = 'primary') {
+    showSnackbar(text, color = "primary") {
       this.snackbar.text = text;
       this.snackbar.color = color;
       this.snackbar.show = true;
     },
 
-
     _demoTemplates() {
       return [
         {
-          idTemplate: '1',
+          idTemplate: "1",
           name: 'ООО "Энергосистемы"',
-          description: 'Информирование о задержке строительства Корнеева',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5073.png',
-          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
+          // description: "Информирование о задержке строительства Корнеева",
+          imageKey: "https://storage.yandexcloud.net/step2002sharp/3824.png",
+          mainImage:
+            "https://storage.yandexcloud.net/step2002sharp/Electrosystems_template.png",
+          previewData: { col1: "Client", col2: "Date", col3: 123.45 },
         },
+        // {
+        //   idTemplate: "2",
+        //   name: 'ООО "Энергосистемы"',
+        //   description: "Информирование о задержке строительства Логинова",
+        //   imageKey: "https://storage.yandexcloud.net/step2002sharp/3824.png",
+        //   mainImage: "https://storage.yandexcloud.net/step2002sharp/3824_1.png",
+        //   previewData: { col1: "Party A", col2: "Party B", col3: "Signature" },
+        // },
         {
-          idTemplate: '2',
-          name: 'ООО "Энергосистемы"',
-          description: 'Информирование о задержке строительства Логинова',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/3824_1.png',
-          previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
-        },
-        {
-          idTemplate: '3',
+          idTemplate: "2",
           name: 'ООО "Гефест"',
-          description: 'ТСН СНТ Художник о недопуске',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/4396.png',
-          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
+          // description: "ТСН СНТ Художник о недопуске",
+          imageKey: "https://storage.yandexcloud.net/step2002sharp/Gefest.png",
+          mainImage:
+            "https://storage.yandexcloud.net/step2002sharp/Gefest_template.png",
+          previewData: { col1: "Client", col2: "Date", col3: 123.45 },
         },
-        {
-          idTemplate: '4',
-          name: 'ООО "Гефест"',
-          description: 'О задержке сроков выполнения договора',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/4955.png',
-          previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
-        },
-        {
-          idTemplate: '5',
-          name: 'ООО "Гефест"',
-          description: 'Информирование о задержке ООО Платенхаус',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5049.png',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
-          previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
-        },
-        {
-          idTemplate: '6',
-          name: 'ООО "Энергосистемы"',
-          description: 'Информирование о задержке строительства',
-          imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
-          mainImage : 'https://storage.yandexcloud.net/step2002sharp/5257.png',
-          previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
-        },
+        // {
+        //   idTemplate: '4',
+        //   name: 'ООО "Гефест"',
+        //   description: 'О задержке сроков выполнения договора',
+        //   imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
+        //   mainImage : 'https://storage.yandexcloud.net/step2002sharp/4955.png',
+        //   previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
+        // },
+        // {
+        //   idTemplate: '5',
+        //   name: 'ООО "Гефест"',
+        //   description: 'Информирование о задержке ООО Платенхаус',
+        //   mainImage : 'https://storage.yandexcloud.net/step2002sharp/5049.png',
+        //   imageKey: 'https://storage.yandexcloud.net/step2002sharp/Gefest.png',
+        //   previewData: { col1: 'Client', col2: 'Date', col3: 123.45 }
+        // },
+        // {
+        //   idTemplate: '6',
+        //   name: 'ООО "Энергосистемы"',
+        //   description: 'Информирование о задержке строительства',
+        //   imageKey: 'https://storage.yandexcloud.net/step2002sharp/3824.png',
+        //   mainImage : 'https://storage.yandexcloud.net/step2002sharp/5257.png',
+        //   previewData: { col1: 'Party A', col2: 'Party B', col3: 'Signature' }
+        // },
       ];
-    }
-  }
+    },
+  },
 };
 </script>

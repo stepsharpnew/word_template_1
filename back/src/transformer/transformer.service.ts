@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import Docxtemplater from 'docxtemplater';
 import * as fs from 'fs';
 import * as path from 'path';
 import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
 import { CommonService } from 'src/common/common.service';
-import reasons from './reasons';
 import { FileLoggerService } from 'src/logger/logger.service';
+import reasons from './reasons';
 
 @Injectable()
 export class TransformerService {
@@ -28,6 +28,7 @@ export class TransformerService {
       paragraphLoop: true,
       linebreaks: true,
     });
+    console.log(dto);
 
     const data = {
       contractNo: dto.contractNo ?? '',
@@ -36,10 +37,11 @@ export class TransformerService {
       contractor: dto.contractor ?? '',
       outgoingNo: dto.outgoingNo ?? '',
       outgoingDate: dto.outgoingDate ?? '',
+      applicant: dto.applicant ?? '',
       contractEnd: this.commonService.formatDate(dto.contractEnd) ?? '',
       res: dto.res,
       title_cleared: this.commonService.extractMainObject(dto.title),
-      applicant: dto.applicant,
+      // applicant: dto.applicant,
       ...this.commonService.containReason(dto.reasons, dto),
       ishod_number: this.commonService.outgoingDateNumber(dto.ishod_number),
     };
