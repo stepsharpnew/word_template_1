@@ -91,14 +91,25 @@ export class CommonService {
 
   outgoingDateNumber(input: string): string {
     try {
-      const dateMatch = input.match(/от\s*(\d{2}\.\d{2}\.\d{4})/);
-      const numberMatch = input.match(/№\s*([^\s]+)/);
-      const date = dateMatch ? dateMatch[1] : '';
-      const number = numberMatch ? numberMatch[1] : '';
+      let date = '';
+      let number = '';
+
+      // ищем дату
+      const dateMatch = input.match(/(\d{2}\.\d{2}\.\d{4})/);
+      if (dateMatch) {
+        date = dateMatch[1];
+      }
+
+      // ищем номер
+      const numberMatch = input.match(/(?:№\s*([^\s]+)|\s([А-ЯA-Z0-9\/-]+))$/u);
+      if (numberMatch) {
+        number = numberMatch[1] || numberMatch[2] || '';
+      }
+
       const formattedDate = date ? `${date} г.` : '';
-      return `№ ${number} от ${formattedDate}`;
+      return number ? `№ ${number} от ${formattedDate}` : input;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return input;
     }
   }
