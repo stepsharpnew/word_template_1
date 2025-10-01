@@ -25,71 +25,50 @@
     >
       <v-card elevation="6" class="rounded-xl">
         <v-card-title class="bg-primary text-white">
-          <span class="text-h6 font-weight-bold"
-            >Выберите причины в порядке очередности абзацев</span
-          >
+          <span class="text-h6 font-weight-bold">
+            Выберите причины в порядке очередности абзацев
+          </span>
         </v-card-title>
 
         <v-card-text>
-          <v-row>
-            <v-col cols="6">
-              <v-card
-                v-for="reason in leftColumn"
-                :key="reason.id"
-                class="ma-2 pa-4 clickable rounded-lg reason-card"
-                :elevation="isSelected(reason) ? 8 : 2"
-                :color="getReasonColor(reason)"
-                @click="selectReason(reason)"
-              >
-                <v-row align="center" no-gutters>
-                  <v-col>
-                    <span class="text-body-1 font-weight-medium">
-                      {{ reason.description }}
-                    </span>
-                  </v-col>
-                  <v-col cols="auto" v-if="isSelected(reason)">
-                    <v-chip
-                      small
-                      color="primary"
-                      text-color="white"
-                      class="elevation-2"
+          <!-- Группы причин -->
+          <div v-for="(reasons, tag) in groupedReasons" :key="tag" class="mb-6">
+            <v-card class="mb-3 rounded-lg elevation-2">
+              <v-card-title class="text-subtitle-1 font-weight-bold">
+                {{ tag }}
+              </v-card-title>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="6" v-for="reason in reasons" :key="reason.id">
+                    <v-card
+                      class="ma-2 pa-4 clickable rounded-lg reason-card"
+                      :elevation="isSelected(reason) ? 8 : 2"
+                      :color="getReasonColor(reason)"
+                      @click="selectReason(reason)"
                     >
-                      {{ getOrder(reason) }}
-                    </v-chip>
+                      <v-row align="center" no-gutters>
+                        <v-col>
+                          <span class="text-body-1 font-weight-medium">
+                            {{ reason.description }}
+                          </span>
+                        </v-col>
+                        <v-col cols="auto" v-if="isSelected(reason)">
+                          <v-chip
+                            small
+                            color="primary"
+                            text-color="white"
+                            class="elevation-2"
+                          >
+                            {{ getOrder(reason) }}
+                          </v-chip>
+                        </v-col>
+                      </v-row>
+                    </v-card>
                   </v-col>
                 </v-row>
-              </v-card>
-            </v-col>
-
-            <v-col cols="6">
-              <v-card
-                v-for="reason in rightColumn"
-                :key="reason.id"
-                class="ma-2 pa-4 clickable rounded-lg reason-card"
-                :elevation="isSelected(reason) ? 8 : 2"
-                :color="getReasonColor(reason)"
-                @click="selectReason(reason)"
-              >
-                <v-row align="center" no-gutters>
-                  <v-col>
-                    <span class="text-body-1 font-weight-medium">
-                      {{ reason.description }}
-                    </span>
-                  </v-col>
-                  <v-col cols="auto" v-if="isSelected(reason)">
-                    <v-chip
-                      small
-                      color="primary"
-                      text-color="white"
-                      class="elevation-2"
-                    >
-                      {{ getOrder(reason) }}
-                    </v-chip>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-col>
-          </v-row>
+              </v-card-text>
+            </v-card>
+          </div>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -125,11 +104,12 @@ export default {
     };
   },
   computed: {
-    leftColumn() {
-      return this.reasons.filter((_, i) => i % 2 === 0);
-    },
-    rightColumn() {
-      return this.reasons.filter((_, i) => i % 2 !== 0);
+    groupedReasons() {
+      return this.reasons.reduce((groups, reason) => {
+        if (!groups[reason.tag]) groups[reason.tag] = [];
+        groups[reason.tag].push(reason);
+        return groups;
+      }, {});
     },
   },
   async mounted() {

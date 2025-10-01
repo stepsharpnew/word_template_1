@@ -294,7 +294,7 @@ export default {
         );
 
         const filename = `${
-          this.parsedObject.contractNo
+          this.parsedObject.ishod_number
         }_${new Date().toLocaleDateString("ru-RU")}.docx`;
         const blob = new Blob([resp.data], {
           type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
