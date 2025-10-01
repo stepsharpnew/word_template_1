@@ -19,8 +19,8 @@
                 @reasons-cleared="onReasonsCleared"
               />
             </div>
-            <div class="d-flex">
-              <div class="d-flex w-100">
+            <div class="d-flex flex-column align-end">
+              <div class="d-flex">
                 <v-file-input
                   v-model="files"
                   label="Выбрать .xlsx файл"
@@ -28,7 +28,7 @@
                   accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                   :multiple="false"
                   class="ma-4 pa-6 rounded-lg elevation-4"
-                  style="width: 100%; max-width: 680px"
+                  style="width: 100%; min-width: 679px"
                   @change="onFilesChange"
                   show-size
                 >

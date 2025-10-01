@@ -1,13 +1,33 @@
 <template>
-  <div class="my-5">
-    <v-btn color="primary" @click="dialog = true" class="mr-5"
-      >Выбрать причины</v-btn
+  <div class="my-5 text-center">
+    <v-btn
+      color="primary"
+      @click="dialog = true"
+      class="mr-5"
+      rounded="xl"
+      elevation="2"
     >
-    <v-btn color="red-darken-2" @click="clearReasons"> Очистить </v-btn>
-    <v-dialog v-model="dialog" max-width="1200">
-      <v-card>
-        <v-card-title>
-          <span class="text-h6">Выберите причины в порядке очередности</span>
+      Выбрать причины
+    </v-btn>
+    <v-btn
+      color="red-darken-2"
+      @click="clearReasons"
+      rounded="xl"
+      elevation="2"
+    >
+      Очистить
+    </v-btn>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="1000"
+      transition="dialog-bottom-transition"
+    >
+      <v-card elevation="6" class="rounded-xl">
+        <v-card-title class="bg-primary text-white">
+          <span class="text-h6 font-weight-bold"
+            >Выберите причины в порядке очередности абзацев</span
+          >
         </v-card-title>
 
         <v-card-text>
@@ -16,16 +36,24 @@
               <v-card
                 v-for="reason in leftColumn"
                 :key="reason.id"
-                class="ma-1 pa-3 clickable"
+                class="ma-2 pa-4 clickable rounded-lg reason-card"
+                :elevation="isSelected(reason) ? 8 : 2"
                 :color="getReasonColor(reason)"
                 @click="selectReason(reason)"
               >
-                <v-row align="center">
+                <v-row align="center" no-gutters>
                   <v-col>
-                    {{ reason.description }}
+                    <span class="text-body-1 font-weight-medium">
+                      {{ reason.description }}
+                    </span>
                   </v-col>
                   <v-col cols="auto" v-if="isSelected(reason)">
-                    <v-chip small color="primary" text-color="white">
+                    <v-chip
+                      small
+                      color="primary"
+                      text-color="white"
+                      class="elevation-2"
+                    >
                       {{ getOrder(reason) }}
                     </v-chip>
                   </v-col>
@@ -37,16 +65,24 @@
               <v-card
                 v-for="reason in rightColumn"
                 :key="reason.id"
-                class="ma-1 pa-3 clickable"
+                class="ma-2 pa-4 clickable rounded-lg reason-card"
+                :elevation="isSelected(reason) ? 8 : 2"
                 :color="getReasonColor(reason)"
                 @click="selectReason(reason)"
               >
-                <v-row align="center">
+                <v-row align="center" no-gutters>
                   <v-col>
-                    {{ reason.description }}
+                    <span class="text-body-1 font-weight-medium">
+                      {{ reason.description }}
+                    </span>
                   </v-col>
                   <v-col cols="auto" v-if="isSelected(reason)">
-                    <v-chip small color="primary" text-color="white" plain>
+                    <v-chip
+                      small
+                      color="primary"
+                      text-color="white"
+                      class="elevation-2"
+                    >
                       {{ getOrder(reason) }}
                     </v-chip>
                   </v-col>
@@ -58,10 +94,19 @@
 
         <v-divider></v-divider>
 
-        <v-card-actions>
+        <v-card-actions class="pa-4">
           <v-spacer />
-          <v-btn text @click="dialog = false">Отмена</v-btn>
-          <v-btn color="primary" @click="save">Сохранить</v-btn>
+          <v-btn
+            variant="outlined"
+            color="grey-darken-1"
+            rounded="lg"
+            @click="dialog = false"
+          >
+            Отмена
+          </v-btn>
+          <v-btn color="primary" rounded="lg" elevation="3" @click="save">
+            Сохранить
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -114,7 +159,7 @@ export default {
       return index + 1;
     },
     getReasonColor(reason) {
-      return this.isSelected(reason) ? "#d1e8ff" : "#ffffff";
+      return this.isSelected(reason) ? "#e3f2fd" : "#ffffff";
     },
     save() {
       this.dialog = false;
@@ -131,9 +176,13 @@ export default {
 <style scoped>
 .clickable {
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.25s ease-in-out;
 }
 .clickable:hover {
-  background-color: #e6f0ff;
+  transform: scale(1.02);
+  background-color: #f5faff !important;
+}
+.reason-card {
+  border: 1px solid #e0e0e0;
 }
 </style>

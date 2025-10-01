@@ -103,6 +103,7 @@
             @selectedReasons="selectedReasons"
             @reasonsCleared="reasonsCleared"
           />
+          <!-- <ConstructionAnimation /> -->
           <div v-for="(reason, index) in reasons" :key="reason.id" class="mb-2">
             <v-card class="pa-3 rounded-lg shadow-sm">
               <v-card-text class="text-base font-medium">
@@ -178,6 +179,7 @@
 </template>
 
 <script>
+import ConstructionAnimation from "./ConstructionAnimation.vue";
 import ReasonsAutoComplete from "./ReasonsAutoComplete.vue";
 
 export default {
@@ -204,6 +206,7 @@ export default {
   },
   components: {
     ReasonsAutoComplete,
+    ConstructionAnimation,
   },
   mounted() {
     this.fetchTemplates();
