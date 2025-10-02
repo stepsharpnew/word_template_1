@@ -39,7 +39,6 @@ bot.command("today", async (ctx) => {
   try {
     const res = await axios.get(`${API_URL}/today`);
     const logs = Array.isArray(res.data) ? res.data : [];
-    console.log(res);
 
     if (logs.length === 0) {
       return ctx.reply("Сегодня логов нет 📭");

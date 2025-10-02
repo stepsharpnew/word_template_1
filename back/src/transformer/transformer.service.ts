@@ -47,7 +47,6 @@ export class TransformerService {
     try {
       doc.render(data);
       const bufferAfterFirst = doc.getZip().generate({ type: 'nodebuffer' });
-      // console.log(data);
 
       const zip2 = new PizZip(bufferAfterFirst);
       const doc2 = new Docxtemplater(zip2, {
