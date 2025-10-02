@@ -4,7 +4,7 @@ import * as path from 'path';
 
 @Injectable()
 export class FileLoggerService implements LoggerService {
-  private logFile = path.resolve(process.cwd(), 'logs', 'app.log');
+  private logFile = path.resolve(process.cwd(), 'logs.txt');
 
   log(message: any) {
     this.write('LOG', message);
@@ -27,11 +27,16 @@ export class FileLoggerService implements LoggerService {
   }
 
   private write(level: string, message: string) {
-    const dir = path.dirname(this.logFile);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    try {
+      const timestamp = new Date().toISOString();
+      fs.appendFileSync(
+        this.logFile,
+        `[${timestamp}] [${level}] ${message}\n`,
+        'utf8',
+      );
+    } catch (err) {
+      // fallback на консоль, если не удалось записать
+      console.error('Ошибка записи в лог:', err);
     }
-    const timestamp = new Date().toISOString();
-    fs.appendFileSync(this.logFile, `[${timestamp}] [${level}] ${message}\n`, 'utf8');
   }
 }

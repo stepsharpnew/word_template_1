@@ -281,7 +281,6 @@ export default {
         ...this.templateSelected,
         reasons: this.reasons,
       };
-      console.log(this.parsedObject);
 
       this.sending = true;
       try {

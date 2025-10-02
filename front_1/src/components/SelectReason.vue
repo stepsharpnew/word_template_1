@@ -235,7 +235,6 @@ export default {
     selectedReasons(reasons) {
       this.$emit("reasons-selected", reasons);
       this.reasons = reasons;
-      console.log(this.reasons);
     },
     reasonsCleared() {
       this.reasons = null;

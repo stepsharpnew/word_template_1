@@ -20,7 +20,7 @@ export class TransformerService {
       this.commonService.switchReasonsTemplate(dto.idTemplate),
     );
     this.loggerService.log(
-      `Start generating letter for template: ${dto.contractNo}`,
+      `${new Date().toLocaleDateString('ru-RU')};${dto.contractNo}`,
     );
     const content = fs.readFileSync(tplPath, 'binary');
     const zip = new PizZip(content);
@@ -28,8 +28,6 @@ export class TransformerService {
       paragraphLoop: true,
       linebreaks: true,
     });
-    console.log(dto);
-
     const data = {
       contractNo: dto.contractNo ?? '',
       contractDate: dto.contractDate ?? '',
@@ -49,7 +47,7 @@ export class TransformerService {
     try {
       doc.render(data);
       const bufferAfterFirst = doc.getZip().generate({ type: 'nodebuffer' });
-      console.log(data);
+      // console.log(data);
 
       const zip2 = new PizZip(bufferAfterFirst);
       const doc2 = new Docxtemplater(zip2, {
@@ -61,10 +59,6 @@ export class TransformerService {
       return doc2.getZip().generate({ type: 'nodebuffer' });
     } catch (err: any) {
       this.loggerService.error('Error while generating letter', err);
-      console.error('Docxtemplater render error', {
-        message: err.message,
-        properties: err.properties ? err.properties : undefined,
-      });
       throw err;
     }
   }
